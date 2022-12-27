@@ -27,7 +27,13 @@ spec:
     # Installs a debugging toolbox deployment
     toolbox:
       enabled: true
-
+      resources:
+        limits:
+          cpu: "500m"
+          memory: "1Gi"
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
     monitoring:
       # enabling will also create RBAC rules to allow Operator to create ServiceMonitors
       enabled: true
@@ -99,6 +105,62 @@ spec:
         # If set to true, cephCluster deletion does not wait for the PVs to be deleted.
         allowUninstallWithVolumes: false
 
+      resources:
+        mgr:
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+          requests:
+            cpu: "100m"
+            memory: "500Mi"
+        mon:
+          limits:
+            cpu: "500m"
+            memory: "500Mi"
+          requests:
+            cpu: "100m"
+            memory: "500Mi"
+        osd:
+          limits:
+            cpu: "500m"
+            memory: "2Gi"
+          requests:
+            cpu: "100m"
+            memory: "1Gi"
+        prepareosd:
+          # limits: It is not recommended to set limits on the OSD prepare job since it's a one-time burst for memory
+          # that must be allowed to complete without an OOM kill
+          requests:
+            cpu: "300m"
+            memory: "50Mi"
+        mgr-sidecar:
+          limits:
+            cpu: "500m"
+            memory: "100Mi"
+          requests:
+            cpu: "100m"
+            memory: "40Mi"
+        crashcollector:
+          limits:
+            cpu: "500m"
+            memory: "60Mi"
+          requests:
+            cpu: "100m"
+            memory: "60Mi"
+        logcollector:
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+        cleanup:
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
 
       # The option to automatically remove OSDs that are out and are safe to destroy.
       removeOSDsIfOutAndSafeToRemove: false
@@ -280,11 +342,11 @@ spec:
             activeStandby: true
             resources:
               limits:
-                cpu: "2000m"
-                memory: "4Gi"
-              requests:
                 cpu: "1000m"
                 memory: "4Gi"
+              requests:
+                cpu: "200m"
+                memory: "2Gi"
             priorityClassName: system-cluster-critical
         storageClass:
           enabled: true
@@ -345,6 +407,13 @@ spec:
           preservePoolsOnDelete: true
           gateway:
             port: 80
+            resources:
+              limits:
+                cpu: "1000m"
+                memory: "1Gi"
+              requests:
+                cpu: "500m"
+                memory: "500Mi"
             # securePort: 443
             # sslCertificateRef:
             instances: 1
