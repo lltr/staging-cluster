@@ -61,7 +61,7 @@ spec:
           cert-manager.io/cluster-issuer: letsencrypt-production
         pathType: Prefix
         hosts:
-          - &host_prometheus prometheus.${SECRET_DOMAIN}
+          - &host_prometheus "prometheus.${SECRET_DOMAIN}"
         tls:
           - hosts:
               - *host_prometheus
