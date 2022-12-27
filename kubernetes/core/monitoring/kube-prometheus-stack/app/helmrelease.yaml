@@ -28,61 +28,61 @@ spec:
       namespace: rook-ceph
   values:
     alertmanager:
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      annotations:
-        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-        external-dns.home.arpa/enabled: "true"
-        cert-manager.io/cluster-issuer: letsencrypt-production
-      pathType: Prefix
-      hosts:
-        - &host_alertmanager alertmanager.${SECRET_DOMAIN}
-      tls:
-        - hosts:
-            - *host_alertmanager
-  grafana:
-    enabled: false
-
-  ## Component scraping kube proxy
-  ##
-  kubeProxy:
-    enabled: false
-
-  ## Deploy a Prometheus instance
-  ##
-  prometheus:
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      annotations:
-        external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
-        external-dns.home.arpa/enabled: "true"
-        cert-manager.io/cluster-issuer: letsencrypt-production
-      pathType: Prefix
-      hosts:
-        - &host_prometheus prometheus.${SECRET_DOMAIN}
-      tls:
-        - hosts:
-            - *host_prometheus
-
-    ## Settings affecting prometheusSpec
-    ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#prometheusspec
-    ##
-    prometheusSpec:
-      retention: 180d
-      retentionSize: "95GB"
-      podAntiAffinity: "hard"
-      storageSpec:
-        volumeClaimTemplate:
-          spec:
-            storageClassName: "ceph-block"
-            resources:
-              requests:
-                storage: 100Gi
-
-      additionalScrapeConfigsSecret:
+      ingress:
         enabled: true
-        name: additional-scrape-configs
-        key: prometheus-additional.yaml
+        ingressClassName: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          external-dns.home.arpa/enabled: "true"
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        pathType: Prefix
+        hosts:
+          - &host_alertmanager alertmanager.${SECRET_DOMAIN}
+        tls:
+          - hosts:
+              - *host_alertmanager
+    grafana:
+      enabled: false
+
+    ## Component scraping kube proxy
+    ##
+    kubeProxy:
+      enabled: false
+
+    ## Deploy a Prometheus instance
+    ##
+    prometheus:
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
+          external-dns.home.arpa/enabled: "true"
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        pathType: Prefix
+        hosts:
+          - &host_prometheus prometheus.${SECRET_DOMAIN}
+        tls:
+          - hosts:
+              - *host_prometheus
+
+      ## Settings affecting prometheusSpec
+      ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#prometheusspec
+      ##
+      prometheusSpec:
+        retention: 180d
+        retentionSize: "95GB"
+        podAntiAffinity: "hard"
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: "ceph-block"
+              resources:
+                requests:
+                  storage: 100Gi
+
+        additionalScrapeConfigsSecret:
+          enabled: true
+          name: additional-scrape-configs
+          key: prometheus-additional.yaml
 
