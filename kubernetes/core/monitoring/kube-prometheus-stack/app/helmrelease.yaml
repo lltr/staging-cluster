@@ -34,12 +34,13 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
           external-dns.home.arpa/enabled: "true"
-          cert-manager.io/cluster-issuer: letsencrypt-production
+          cert-manager.io/cluster-issuer: letsencrypt-staging
         pathType: Prefix
         hosts:
           - &host_alertmanager alertmanager.${SECRET_DOMAIN}
         tls:
-          - hosts:
+          - secretName: alertmanager-tls
+            hosts:
               - *host_alertmanager
     grafana:
       enabled: false
