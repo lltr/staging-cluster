@@ -108,25 +108,25 @@ spec:
       resources:
         mgr:
           limits:
-            cpu: "2000m"
-            memory: "2Gi"
+            cpu: "500m"
+            memory: "1Gi"
           requests:
             cpu: "1000m"
-            memory: "1Gi"
+            memory: "500Mi"
         mon:
           limits:
-            cpu: "2000m"
-            memory: "2Gi"
-          requests:
             cpu: "1000m"
             memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "500Mi"
         osd:
           limits:
-            cpu: "2000m"
-            memory: "4Gi"
-          requests:
             cpu: "1000m"
-            memory: "4Gi"
+            memory: "2Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
         prepareosd:
           # limits: It is not recommended to set limits on the OSD prepare job since it's a one-time burst for memory
           # that must be allowed to complete without an OOM kill
@@ -239,20 +239,34 @@ spec:
 
     ingress:
       dashboard:
+        # annotations:
+        #   external-dns.alpha.kubernetes.io/hostname: dashboard.example.com
+        #   nginx.ingress.kubernetes.io/rewrite-target: /ceph-dashboard/$2
+        #   kubernetes.io/ingress.class: nginx
+        # If the dashboard has ssl: true the following will make sure the NGINX Ingress controller can expose the dashboard correctly
+        #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        #   nginx.ingress.kubernetes.io/server-snippet: |
+        #     proxy_ssl_verify off;
+        # host:
+        #   name: dashboard.example.com
+        #   path: "/ceph-dashboard(/|$)(.*)"
+        # tls:
+        # - hosts:
+        #     - dashboard.example.com
+        #   secretName: testsecret-tls
+        ## Note: Only one of ingress class annotation or the `ingressClassName:` can be used at a time
+        ## to set the ingress class
+        # ingressClassName: nginx
+
         annotations:
           nginx.ingress.kubernetes.io/rewrite-target: /
-          cert-manager.io/cluster-issuer: letsencrypt-production
           external-dns.alpha.kubernetes.io/target: "ingress.${SECRET_DOMAIN}"
           external-dns.home.arpa/enabled: "true"
         # If the dashboard has ssl: true the following will make sure the NGINX Ingress controller can expose the dashboard correctly
           # nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
         host:
-          name: &host "rook-ceph.${SECRET_DOMAIN}"
+          name: "rook-ceph.${SECRET_DOMAIN}"
           path: "/"
-        tls:
-        - hosts:
-            - *host
-          secretName: rook-ceph-tls
         ingressClassName: nginx
 
 
@@ -395,11 +409,11 @@ spec:
             port: 80
             resources:
               limits:
-                cpu: "2000m"
-                memory: "2Gi"
-              requests:
                 cpu: "1000m"
                 memory: "1Gi"
+              requests:
+                cpu: "500m"
+                memory: "500Mi"
             # securePort: 443
             # sslCertificateRef:
             instances: 1
