@@ -63,7 +63,8 @@ spec:
         hosts:
           - &host_prometheus "prometheus.${SECRET_DOMAIN}"
         tls:
-          - hosts:
+          - secretName: prometheus-tls
+            hosts:
               - *host_prometheus
 
       ## Settings affecting prometheusSpec
